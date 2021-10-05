@@ -49,6 +49,7 @@ body{
   grid-template-rows: repeat(4,minmax(150px, 1fr));
   gap:25px;
   padding:25px;
+
 }
 
 .imagen{
@@ -87,7 +88,7 @@ body{
 }
 
 .carrito{
-  width:35%;
+  width:25%;
   background-color: var(--color-bg-secundario);
   color:var(--color-terciario);
   padding:30px;

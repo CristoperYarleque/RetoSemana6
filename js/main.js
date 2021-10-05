@@ -105,6 +105,7 @@ miPrecio.innerHTML = `<span>S/ ${item.precio}</span>`
 // ETIQUETA BUTTON
 let miBoton = document.createElement("button")
 miBoton.classList.add("btn-agregar")
+miBoton.style.cursor="pointer"
 miPrecio.appendChild(miBoton)
 miBoton.innerText = "Agregar"
 
