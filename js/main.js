@@ -60,13 +60,19 @@ let listaPlatillos = [
  * 4. OPCIONAL (guardar el resumen en el LocalStorage)
  */
 
-//lo ponen el discord
-
 // OBTENIENDO EL CONTENIDO
 let miMain = document.getElementById("contenido")
 
+// AGREGANDO TR AL BODY-RESUMEN PARA ALMACENAR EL TOTAL
+let suma = 0
+let tresumen = document.getElementById("tbody-resumen")
+let resumen = document.createElement("tr")
+    resumen.innerHTML = `<td>TOTAL</td>
+                         <td class="totalPagar"></td>`
+tresumen.appendChild(resumen)
+
 // FOREACH AL ARRAY
-listaPlatillos.forEach(function (item,indice) {
+listaPlatillos.forEach(function (item,indice){
 
 // DIV TARJETA
 let miTarjeta = document.createElement("div")
@@ -102,7 +108,7 @@ miBoton.classList.add("btn-agregar")
 miPrecio.appendChild(miBoton)
 miBoton.innerText = "Agregar"
 
-// EVENTO PARA AGREGAR AL CARRITO PRIMERA COMPRA
+// EVENTO PARA AGREGAR AL CARRITO COMO PRIMERA COMPRA
 let tbody = document.getElementById("tbody-carrito")
 let hola = true
 miBoton.addEventListener("click" ,function(){
@@ -117,32 +123,16 @@ miBoton.addEventListener("click" ,function(){
     }
 })
 
-// EVENTO PARA ADICIONAR EL TOTAL DE CANTIDAD Y PRECIO DE LOS PRODUTOS
+// EVENTO PARA AUMENTAR LA CANTIDAD,EL SUB TOTAL Y EL COSTO TOTAL 
 let total = 0
 miBoton.addEventListener("click",function(){
     total++
-    sumaTotal.push(item.precio)
+    let tdvalor = document.querySelector(".totalPagar")
     let cantidad = document.querySelector(`.cantidad${indice}`)
     let pagar = document.querySelector(`.pagar${indice}`)
     cantidad.innerText = `${total}`
     pagar.innerText = `${total * item.precio}`
+    suma = suma + item.precio
+    tdvalor.innerText = `${suma}`
     })
 })
-
-// SUMANDO EL TOTAL DE PRECIO FUNCION EN MANTENIMIENTO XD
-let tresumen = document.getElementById("tbody-resumen")
-let resumen = document.createElement("tr")
-    resumen.innerHTML = `<td>TOTAL</td>
-                         <td class="totalPagar"></td>`
-tresumen.appendChild(resumen)
-
-let totalPagar = document.querySelector(".totalPagar")
-
-let sumaTotal = []
-let saldoTotal = 0
-    
-for(let i = 0; i < sumaTotal.length; i++){
-    saldoTotal += sumaTotal[i]
-}
-
-totalPagar.innerHTML = `${saldoTotal}`
