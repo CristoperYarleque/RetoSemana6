@@ -1,3 +1,4 @@
+// ARREGLO DE PLATILLOS
 let listaPlatillos = [
     {
         id: 1,
@@ -50,90 +51,96 @@ let listaPlatillos = [
     },
 ];
 
-/**REQUERIDA
- * 1. mostrar estos platillos de forma identica a como lo hace preview
- *
- * //ESTO ES OPCIONAL, aqui tendrías que investigar
- * 2. OPCIONAL (cuando de click en el boton agregar hacer que eso se sume al carrito)
- * 	-tips getElementsByClassName, y pueden agregar attributos adicionales
- * 3. OPCIONAL (mostrar el resumen del carrito en la parte izquierda)
- * 4. OPCIONAL (guardar el resumen en el LocalStorage)
- */
-
-// OBTENIENDO EL CONTENIDO
-let miMain = document.getElementById("contenido")
-
-// AGREGANDO TR AL BODY-RESUMEN PARA ALMACENAR EL TOTAL
-let suma = 0
-let tresumen = document.getElementById("tbody-resumen")
-let resumen = document.createElement("tr")
-    resumen.innerHTML = `<td>TOTAL</td>
-                         <td class="totalPagar"></td>`
-tresumen.appendChild(resumen)
-
-// FOREACH AL ARRAY
-listaPlatillos.forEach(function (item,indice){
-
-// DIV TARJETA
-let miTarjeta = document.createElement("div")
-miTarjeta.classList.add("tarjeta")
-miMain.appendChild(miTarjeta)
-
-// DIV IMAGEN
-let miImagen = document.createElement("div")
-miImagen.classList.add("imagen")
-miTarjeta.appendChild(miImagen)
-
-// ETIQUETA IMG
-let miImg = document.createElement("img")
-miImg.setAttribute("src",`${item.imagen}`)
-miImagen.appendChild(miImg)
-
-// DIV TEXTO
-let miTexto = document.createElement("div")
-miTexto.classList.add("texto")
-miTarjeta.appendChild(miTexto)
-miTexto.innerHTML = `<h4>${item.nombre}</h4>
-<p>${item.descripcion}</p>`
-
-// DIV PRECIO
-let miPrecio = document.createElement("div")
-miPrecio.classList.add("precio")
-miTexto.appendChild(miPrecio)
-miPrecio.innerHTML = `<span>S/ ${item.precio}</span>`
-
-// ETIQUETA BUTTON
-let miBoton = document.createElement("button")
-miBoton.classList.add("btn-agregar")
-miBoton.style.cursor="pointer"
-miPrecio.appendChild(miBoton)
-miBoton.innerText = "Agregar"
-
-// EVENTO PARA AGREGAR AL CARRITO COMO PRIMERA COMPRA
-let tbody = document.getElementById("tbody-carrito")
-let hola = true
-miBoton.addEventListener("click" ,function(){
-    if(hola == true){
-    let tr = document.createElement("tr")
-    tr.innerHTML = `<td>${item.nombre}</td>
-                    <td class="cantidad${indice}">1</td>
-                    <td>${item.precio}</td>
-                    <td class="pagar${indice}">${item.precio}</td>`
-    tbody.appendChild(tr)
-    hola = false
+// ALMACENANDO DATOS EN EL DOM
+function agregarAMain(item){
+    // AGREGANDO TR AL BODY-RESUMEN PARA ALMACENAR EL TOTAL
+    let tresumen = document.getElementById("tbody-resumen")
+    let resumen = document.createElement("tr")
+        resumen.innerHTML = `<td>TOTAL</td>
+                             <td class="totalPagar"></td>`
+    tresumen.appendChild(resumen)
+    // OBTENIENDO EL CONTENIDO
+    let miMain = document.getElementById("contenido")
+    // RECORRIENDO EL ARRAY
+    for(let i = 0; i < item.length; i++){
+        // DIV TARJETA
+        let miTarjeta = document.createElement("div")
+        miTarjeta.classList.add("tarjeta")
+        miMain.appendChild(miTarjeta)
+        // DIV IMAGEN
+        let miImagen = document.createElement("div")
+        miImagen.classList.add("imagen")
+        miTarjeta.appendChild(miImagen)
+        // ETIQUETA IMG
+        let miImg = document.createElement("img")
+        miImg.setAttribute("src",`${item[i].imagen}`)
+        miImagen.appendChild(miImg)
+        // DIV TEXTO
+        let miTexto = document.createElement("div")
+        miTexto.classList.add("texto")
+        miTarjeta.appendChild(miTexto)
+        miTexto.innerHTML = `<h4>${item[i].nombre}</h4>
+        <p>${item[i].descripcion}</p>`
+        // DIV PRECIO
+        let miPrecio = document.createElement("div")
+        miPrecio.classList.add("precio")
+        miTexto.appendChild(miPrecio)
+        miPrecio.innerHTML = `<span>S/ ${item[i].precio}</span>`
+        // ETIQUETA BUTTON
+        let miBoton = document.createElement("button")
+        miBoton.classList.add("btn-agregar",`boton${i}`)
+        miPrecio.appendChild(miBoton)
+        miBoton.innerText = "Agregar"
+    // VINCULANDO Y LLAMANDO FUNCIONES
+    carritoPC(item,i)
+    sumaDeTotales(item,i)
     }
-})
+}
 
-// EVENTO PARA AUMENTAR LA CANTIDAD,EL SUB TOTAL Y EL COSTO TOTAL 
-let total = 0
-miBoton.addEventListener("click",function(){
-    total++
-    let tdvalor = document.querySelector(".totalPagar")
-    let cantidad = document.querySelector(`.cantidad${indice}`)
-    let pagar = document.querySelector(`.pagar${indice}`)
-    cantidad.innerText = `${total}`
-    pagar.innerText = `${total * item.precio}`
-    suma = suma + item.precio
-    tdvalor.innerText = `${suma}`
+// AGREGANDO AL CARRITO PRIMERA COMPRA
+function carritoPC(item,i){
+    miBoton = document.querySelector(`.boton${i}`)
+    let tbody = document.getElementById("tbody-carrito")
+    let evento = true
+    // EVENTO PARA AGREGAR AL CARRITO COMO PRIMERA COMPRA
+    miBoton.addEventListener("click" ,function(){
+        if(evento == true){
+        let tr = document.createElement("tr")
+        tr.innerHTML = `<td>${item[i].nombre}</td>
+                        <td class="cantidad${i}">1</td>
+                        <td>${item[i].precio}</td>
+                        <td class="pagar${i}">${item[i].precio}</td>`
+        tbody.appendChild(tr)
+        evento = false
+        agregarLS(item,i)
+        }
     })
-})
+}
+
+// SUMATORIA DE TODAS LAS CANTIDADES
+let sumaTotal = 0
+function sumaDeTotales(item,i){
+    let total = 0
+    // EVENTO PARA AUMENTAR LA CANTIDAD,EL SUB TOTAL Y EL COSTO TOTAL 
+    miBoton.addEventListener("click",function(){
+        total++
+        let tdvalor = document.querySelector(".totalPagar")
+        let cantidad = document.querySelector(`.cantidad${i}`)
+        let pagar = document.querySelector(`.pagar${i}`)
+        cantidad.innerText = `${total}`
+        pagar.innerText = `${total * item[i].precio}`
+        sumaTotal = sumaTotal + item[i].precio
+        tdvalor.innerText = `${sumaTotal}`
+    })
+    
+}
+
+// AGREGANDO A LOCALSTORAGE
+let array = []
+function agregarLS(item,i){
+    array.push(item[i].nombre,item[i].precio)
+    let arrJSON = JSON.stringify(array)
+    localStorage.setItem("PRODUCTOS",arrJSON)
+}
+
+agregarAMain(listaPlatillos)
